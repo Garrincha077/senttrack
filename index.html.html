@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sentiment & Swing Tracker Pro v21.4 (Cloud)</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --primary-light: #dbeafe;
+            --bg-body: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border: #e2e8f0;
+            --input-bg: #ffffff;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --success-border: #6ee7b7;
+            --warning: #f59e0b;
+            --warning-bg: #fef3c7;
+            --warning-text: #92400e;
+            --warning-border: #fcd34d;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --danger-border: #fca5a5;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --swing-color: #a855f7;
+        }
+
+        body.dark-mode {
+            --primary: #60a5fa;
+            --primary-hover: #3b82f6;
+            --primary-light: #1e3a8a;
+            --bg-body: #0f172a;
+            --bg-surface: #1e293b;
+            --text-main: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --success: #34d399;
+            --success-bg: #064e3b;
+            --success-text: #6ee7b7;
+            --success-border: #059669;
+            --warning: #fbbf24;
+            --warning-bg: #78350f;
+            --warning-text: #fcd34d;
+            --warning-border: #d97706;
+            --danger: #f87171;
+            --danger-bg: #7f1d1d;
+            --danger-text: #fca5a5;
+            --danger-border: #dc2626;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HEADER */
+        header {
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            padding: 30px 0;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--swing-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background: var(--bg-surface);
+            border: 2px solid var(--border);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            padding: 32px;
+            margin-bottom: 32px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--text-main);
+        }
+
+        /* TABS */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            background: var(--bg-surface);
+            padding: 8px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+            gap: 8px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 14px 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-radius: 10px;
+            transition: var(--transition);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            transform: translateY(-1px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--swing-color) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* FORMS */
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            align-items: start;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .label-info {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        input:hover,
+        select:hover {
+            border-color: var(--text-tertiary);
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        input::placeholder {
+            color: var(--text-tertiary);
+            opacity: 0.7;
+        }
+
+        .btn-group {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        button {
+            padding: 16px 24px;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button[type="submit"],
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--swing-color) 100%);
+            color: white;
+            flex: 2;
+            box-shadow: var(--shadow-md);
+        }
+
+        button[type="submit"]:hover,
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        button[type="submit"]:active,
+        .primary-btn:active {
+            transform: translateY(0);
+        }
+
+        .clear-btn,
+        .secondary-btn {
+            background-color: var(--bg-surface);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .clear-btn:hover,
+        .secondary-btn:hover {
+            background-color: var(--bg-body);
+            border-color: var(--text-secondary);
+            color: var(--text-main);
+        }
+
+        .delete-btn,
+        .edit-btn {
+            background: transparent;
+            padding: 8px;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .delete-btn:hover {
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        .edit-btn:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .export-btn {
+            background-color: var(--success);
+            color: white;
+            border: 2px solid var(--success);
+            font-size: 0.95rem;
+            padding: 12px 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* RESULTS */
+        #result,
+        #swingResult {
+            margin-top: 32px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-box {
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 3px solid transparent;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 900;
+            display: block;
+            line-height: 1;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-recommendation {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .result-details {
+            font-size: 0.95rem;
+            margin-top: 16px;
+            opacity: 1;
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+            padding-top: 16px;
+            line-height: 1.8;
+        }
+
+        /* LIGHT MODE COLORS (Default) */
+        .extreme-bullish {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: var(--success-text);
+            border-color: var(--success-border);
+        }
+
+        .bullish {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .neutral {
+            background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+            color: var(--warning-text);
+            border-color: var(--warning-border);
+        }
+
+        .bearish {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .extreme-bearish {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: var(--danger-text);
+            border-color: var(--danger-border);
+        }
+
+        /* DARK MODE OVERRIDES - High Contrast Fix */
+        body.dark-mode .extreme-bullish {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            color: #a7f3d0;
+            border-color: #059669;
+        }
+
+        body.dark-mode .bullish {
+            background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+            color: #bbf7d0;
+            border-color: #22c55e;
+        }
+
+        body.dark-mode .neutral {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+            color: #fcd34d;
+            border-color: #d97706;
+        }
+
+        body.dark-mode .bearish {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            color: #fca5a5;
+            border-color: #f87171;
+        }
+
+        body.dark-mode .extreme-bearish {
+            background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
+            color: #fecaca;
+            border-color: #dc2626;
+        }
+
+        .external-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .external-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* TABLES */
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-top: 20px;
+            max-height: 500px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-body);
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background-color: var(--bg-body);
+        }
+
+        .score-cell-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .sc-raw {
+            font-size: 0.8em;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .sc-final {
+            font-size: 1.3em;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+
+        .sc-trend {
+            font-size: 0.8em;
+            color: var(--swing-color);
+            font-weight: 700;
+        }
+
+        .sig-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sig-buy {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 2px solid var(--success-border);
+        }
+
+        .sig-hold {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 2px solid #cbd5e1;
+        }
+
+        .sig-sell {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            border: 2px solid var(--danger-border);
+        }
+
+        .delta-up {
+            color: var(--success);
+            font-size: 0.75em;
+            margin-left: 4px;
+            font-weight: 700;
+        }
+
+        .delta-down {
+            color: var(--danger);
+            font-size: 0.75em;
+            margin-left: 4px;
+            font-weight: 700;
+        }
+
+        .delta-neutral {
+            color: var(--text-tertiary);
+            font-size: 0.75em;
+            margin-left: 4px;
+        }
+
+        /* CHART */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .history-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .editing-indicator {
+            background: linear-gradient(135deg, var(--warning-bg) 0%, #fef3c7 100%);
+            border: 2px solid var(--warning-border);
+            color: var(--warning-text);
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+        }
+
+        .editing-indicator.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .file-input-hidden {
+            display: none;
+        }
+
+        /* GAUGE */
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .gauge-wrapper {
+            position: relative;
+            width: 320px;
+            height: 180px;
+            margin-bottom: 20px;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 24;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke-width: 24;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.6s;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .gauge-center {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .gauge-value {
+            font-size: 3.5em;
+            font-weight: 900;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .gauge-label {
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 8px;
+            letter-spacing: 2px;
+        }
+
+        .signal-box {
+            margin-top: 24px;
+            padding: 20px 40px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .signal-text {
+            font-size: 1.8em;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .indicator-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 32px;
+        }
+
+        .indicator-item {
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .indicator-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .indicator-item.bullish-ind {
+            border-left: 6px solid var(--success);
+        }
+
+        .indicator-item.bearish-ind {
+            border-left: 6px solid var(--danger);
+        }
+
+        .indicator-item.neutral-ind {
+            border-left: 6px solid var(--warning);
+        }
+
+        .indicator-name {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .indicator-value {
+            font-size: 1.8em;
+            font-weight: 900;
+            margin: 8px 0;
+        }
+
+        .indicator-signal {
+            font-size: 0.85em;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+
+        .indicator-contribution {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8em;
+        }
+
+        .contribution-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            color: var(--text-secondary);
+        }
+
+        .contribution-value {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1em;
+        }
+
+        .contribution-range {
+            font-size: 0.75em;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .swing-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .swing-info h3 {
+            color: white;
+            margin: 0 0 12px 0;
+            font-size: 1.5rem;
+        }
+
+        .swing-info p {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* BACKUP SECTION */
+        .backup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .backup-card {
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .backup-card h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .stat-unit {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* PERIOD BUTTONS */
+        .period-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .period-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .period-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* DASHBOARD STYLES */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .dashboard-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--swing-color));
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .dashboard-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dashboard-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .dashboard-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .dashboard-value {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 16px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--swing-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dashboard-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-sublabel {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .trend-up {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-border);
+        }
+
+        .trend-down {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid var(--danger-border);
+        }
+
+        .trend-neutral {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+        }
+
+        .insight-item {
+            padding: 12px;
+            background: var(--bg-body);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .insight-icon {
+            font-size: 1.2rem;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .insight-text {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .alert-box {
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, var(--warning-bg) 0%, #fef3c7 100%);
+            color: var(--warning-text);
+            border: 2px solid var(--warning-border);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, var(--success-bg) 0%, #d1fae5 100%);
+            color: var(--success-text);
+            border: 2px solid var(--success-border);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, var(--danger-bg) 0%, #fee2e2 100%);
+            color: var(--danger-text);
+            border: 2px solid var(--danger-border);
+        }
+
+        .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 60px;
+            margin-top: 16px;
+        }
+
+        .mini-bar {
+            flex: 1;
+            background: var(--primary);
+            border-radius: 4px 4px 0 0;
+            transition: var(--transition);
+            opacity: 0.6;
+        }
+
+        .mini-bar:hover {
+            opacity: 1;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-body);
+            border-radius: 8px;
+        }
+
+        .stat-item-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+
+        .stat-item-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .zone-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--bg-body);
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .zone-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .zone-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* LOADING */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; } .container { padding: 16px; } form { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; } .tab-navigation { flex-direction: column; width: 100%; }
+            .tab-btn { width: 100%; justify-content: center; } .result-score { font-size: 3rem; }
+            .gauge-wrapper { width: 280px; height: 160px; } .card { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>☁️ Sentiment & Swing Cloud</h1>
+            <div class="subtitle">Connected to Supabase • v21.4</div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Promijeni temu">🌙</button>
+        </header>
+
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="openTab(event, 'sentimentTab')">📈 Sentiment</button>
+            <button class="tab-btn" onclick="openTab(event, 'swingTab')">⚡ Swing</button>
+            <button class="tab-btn" onclick="openTab(event, 'backupTab')">💾 Podaci</button>
+        </div>
+
+        <div id="sentimentTab" class="tab-content active">
+            <div class="card" style="padding: 0; overflow: hidden; height: 74px; margin-bottom: 32px;">
+                <div id="tradingview-widget-container"></div>
+            </div>
+
+            <div id="sentimentDashboard" class="dashboard-container"></div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                    <h2 style="margin: 0;">📊 Sentiment vs Swing Chart</h2>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="period-btn active" onclick="setChartPeriod(7)" data-period="7">7 dana</button>
+                        <button class="period-btn" onclick="setChartPeriod(30)" data-period="30">30 dana</button>
+                        <button class="period-btn" onclick="setChartPeriod(90)" data-period="90">90 dana</button>
+                        <button class="period-btn" onclick="setChartPeriod(0)" data-period="0">Sve</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div id="sentimentEditIndicator" class="editing-indicator">
+                    <span>✏️ Uređivanje unosa: <strong id="editingDateSentiment"></strong></span>
+                    <button class="secondary-btn" onclick="cancelEditSentiment()">Odustani</button>
+                </div>
+                <h2 id="sentimentFormTitle">➕ Novi Unos (Sentiment)</h2>
+                <form id="sentimentForm">
+                    <div class="form-group"><label for="dateSentiment">Datum unosa</label><input type="date" id="dateSentiment"></div>
+                    <div class="form-group"><label for="cnn">CNN Fear & Greed</label><input type="number" id="cnn" step="1" min="0" max="100" placeholder="0-100" required></div>
+                    <div class="form-group"><label for="naaim">NAAIM Exposure</label><input type="number" id="naaim" step="0.1" min="0" max="200" placeholder="30-100" required></div>
+                    <div class="form-group"><label for="aaii_spread">AAII Spread (%)</label><input type="number" id="aaii_spread" step="0.1" min="-100" max="100" placeholder="-15.2" required></div>
+                    <div class="form-group"><label for="pcr">Put/Call Ratio</label><input type="number" id="pcr" step="0.01" min="0" placeholder="0.95" required></div>
+                    <div class="form-group"><label for="rsi">RSI (S&P 500)</label><input type="number" id="rsi" step="0.1" min="0" max="100" placeholder="30-70" required></div>
+                    <div class="form-group"><label for="vix">VIX</label><input type="number" id="vix" step="0.01" min="0" placeholder="18.50" required></div>
+                    <div class="form-group"><label for="dxy_30wma">DXY Trend</label>
+                        <select id="dxy_30wma"><option value="ravno" selected>Ravan / Neutralan</option><option value="gore">Raste (Bearish)</option><option value="dolje">Pada (Bullish)</option></select>
+                    </div>
+                    <div class="form-group"><label for="dxy_momentum">DXY Momentum</label>
+                        <select id="dxy_momentum"><option value="neutral" selected>Neutralan</option><option value="bullish_cross">Bullish Cross (Bearish)</option><option value="bearish_cross">Bearish Cross (Bullish)</option></select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" id="sentimentSubmitBtn">Izračunaj Sentiment</button>
+                        <button type="button" class="clear-btn" onclick="clearForm('sentimentForm')">Očisti</button>
+                    </div>
+                </form>
+                <div id="result"></div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Povijest Unosa (Sentiment)</h3>
+                <div class="table-wrapper">
+                    <table id="historyTable">
+                        <thead><tr><th>Datum</th><th>Skor</th><th>Signal</th><th>CNN</th><th>NAAIM</th><th>AAII</th><th>P/C</th><th>RSI</th><th>VIX</th><th>DXY</th><th>Akcije</th></tr></thead>
+                        <tbody id="historyTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="swingTab" class="tab-content">
+            <div id="swingDashboard" class="dashboard-container"></div>
+            
+            <div class="card">
+                <div class="swing-info">
+                    <h3>⚡ Swing Trade Gauge</h3>
+                    <p>Kratkoročni sentiment (1-5 dana). Logika: <strong>65% Raw + 35% Trend (SMA5)</strong>.</p>
+                </div>
+                <div class="gauge-container">
+                    <div class="gauge-wrapper">
+                        <svg viewBox="0 0 200 120" style="width:100%;height:100%;">
+                            <defs>
+                                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#10b981" />
+                                    <stop offset="50%" style="stop-color:#f59e0b" />
+                                    <stop offset="100%" style="stop-color:#ef4444" />
+                                </linearGradient>
+                            </defs>
+                            <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+                            <path id="gaugeFill" class="gauge-fill" stroke="url(#gaugeGradient)" d="M 20 100 A 80 80 0 0 1 180 100" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                        </svg>
+                        <div class="gauge-center"><div id="swingGaugeValue" class="gauge-value">---</div><div id="swingGaugeLabel" class="gauge-label">UNESI</div></div>
+                    </div>
+                    <div id="swingSignalBox" class="signal-box neutral" style="display:none;"><span id="swingSignalText" class="signal-text"></span></div>
+                </div>
+                <div id="indicatorBreakdown" class="indicator-breakdown" style="display:none;"></div>
+            </div>
+
+            <div class="card">
+                <div id="swingEditIndicator" class="editing-indicator">
+                    <span>✏️ Uređivanje: <strong id="editingDateSwing"></strong></span>
+                    <button class="secondary-btn" onclick="cancelEditSwing()">Odustani</button>
+                </div>
+                <h2 id="swingFormTitle">➕ Novi Unos (Swing)</h2>
+                <form id="swingForm">
+                    <div class="form-group"><label for="dateSwing">Datum</label><input type="date" id="dateSwing"></div>
+                    <div class="form-group"><label for="swing_rsi">Daily RSI (S&P)</label><input type="number" id="swing_rsi" step="0.1" min="0" max="100" placeholder="45" required></div>
+                    <div class="form-group"><label for="swing_fomo"><span class="label-info">FOMO (% above 5 DMA) ⚡</span></label><input type="number" id="swing_fomo" step="0.1" min="0" max="100" placeholder="0-100" required></div>
+                    <div class="form-group"><label for="swing_fomoav"><span class="label-info">FOMO Av ⚡</span></label><input type="number" id="swing_fomoav" step="0.1" min="0" max="100" placeholder="0-100" required></div>
+                    <div class="form-group"><label for="swing_cnn">CNN Fear & Greed</label><input type="number" id="swing_cnn" step="1" min="0" max="100" placeholder="50" required></div>
+                    <div class="form-group"><label for="swing_dxy">DXY Daily Change</label>
+                        <select id="swing_dxy"><option value="strong_up">Snažno raste (>0.5%)</option><option value="up">Raste (0.2-0.5%)</option><option value="flat" selected>Stabilan (±0.2%)</option><option value="down">Pada (0.2-0.5%)</option><option value="strong_down">Snažno pada (>0.5%)</option></select>
+                    </div>
+                    <div class="form-group"><label for="swing_aaii">AAII Bull Ratio (%)</label><input type="number" id="swing_aaii" step="0.1" min="0" max="100" placeholder="35" required></div>
+                    <div class="form-group"><label for="swing_vix">VIX Level</label><input type="number" id="swing_vix" step="0.1" min="0" placeholder="18" required></div>
+                    <div class="form-group"><label for="swing_vix_change">VIX Daily Change (%)</label><input type="number" id="swing_vix_change" step="0.1" placeholder="2.5" required></div>
+                    <div class="btn-group">
+                        <button type="submit" id="swingSubmitBtn">Izračunaj Swing Signal</button>
+                        <button type="button" class="clear-btn" onclick="clearForm('swingForm')">Očisti</button>
+                    </div>
+                </form>
+                <div id="swingResult"></div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Povijest Unosa (Swing)</h3>
+                <div class="table-wrapper">
+                    <table id="swingHistoryTable">
+                        <thead><tr><th>Datum</th><th>Skor</th><th>Signal</th><th>RSI</th><th>FOMO ⚡</th><th>FOMO Av ⚡</th><th>CNN</th><th>DXY</th><th>AAII</th><th>VIX</th><th>VIX Δ</th><th>Akcije</th></tr></thead>
+                        <tbody id="swingHistoryTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="backupTab" class="tab-content">
+            <div class="card">
+                <h2>💾 Status Podataka (Supabase)</h2>
+                <div style="margin-top: 24px; padding: 24px; background: var(--bg-body); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+                    <h3 style="margin-top: 0;">📊 Statistika Baze</h3>
+                    <div id="dataStats" class="stats-grid"></div>
+                </div>
+                
+                <div class="backup-grid" style="margin-top:32px;">
+                    <div class="backup-card" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #93c5fd;">
+                        <h3 style="color: var(--primary);">📤 Import Backup</h3>
+                        <p style="color: var(--primary); margin-bottom: 20px; opacity: 0.9;">Učitaj stari JSON backup u bazu</p>
+                        <input type="file" id="importFileInput" class="file-input-hidden" accept=".json" onchange="importToSupabase(event)">
+                        <button class="secondary-btn" onclick="document.getElementById('importFileInput').click()" style="width: 100%; background: white; border-color: var(--primary); color: var(--primary);">Odaberi JSON</button>
+                    </div>
+                    <div class="backup-card" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border: 2px solid var(--success-border);">
+                        <h3 style="color: var(--success-text);">📥 Export Backup</h3>
+                        <p style="color: var(--success-text); margin-bottom: 20px; opacity: 0.9;">Spremi podatke iz baze u JSON</p>
+                        <button class="export-btn" onclick="exportAllData()" style="width: 100%;">Preuzmi JSON</button>
+                    </div>
+                </div>
+
+                <div style="padding: 24px; margin-top: 32px; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 2px solid var(--danger-border); border-radius: var(--radius-lg); text-align: center;">
+                    <h3 style="color: var(--danger-text); margin-top: 0;">⚠️ Zona Opasnosti</h3>
+                    <p style="color: var(--danger-text); margin-bottom: 20px;">Ova akcija će trajno obrisati sve podatke iz baze!</p>
+                    <button class="secondary-btn" onclick="deleteAllData()"
+                        style="background: var(--danger); color: white; border-color: var(--danger); font-weight: 700;">
+                        🗑️ Obriši SVE podatke
+                    </button>
+                </div>
+
+                <div style="margin-top:30px; text-align:center;">
+                    <p>Podaci se automatski spremaju u oblak.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        // ------------------------------------------------------------
+        // SUPABASE KONFIGURACIJA
+        // ------------------------------------------------------------
+        const SUPABASE_URL = 'https://ksktzdxxyuiuaskorwvr.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtza3R6ZHh4eXVpdWFza29yd3ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMzM0MDgsImV4cCI6MjA4MDYwOTQwOH0.DQpyTyAt72PmcTrFkriq7VuIeKVFPlAtem3w06Ufx8E';
+        // ------------------------------------------------------------
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Constants
+        const WEIGHTS_SENTIMENT = { cnn: 0.10, naaim: 0.25, aaii: 0.10, pcr: 0.05, rsi: 0.15, vix: 0.25, dxy_trend: 0.06, dxy_momentum: 0.04 };
+
+        // Global State
+        let sentimentChart;
+        let sentimentHistory = [];
+        let swingHistory = [];
+        let editingSentimentId = null; 
+        let editingSwingId = null;     
+        let chartPeriodDays = 7;
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            loadTradingViewWidget();
+            setDefaultDates();
+            
+            await loadAllData(); 
+            
+            initSentimentChart();
+            setupEventListeners();
+            updateDataStats();
+            document.getElementById('loadingOverlay').style.display = 'none'; 
+            openTab(null, 'sentimentTab');
+            setChartPeriod(7);
+        });
+
+        // --- SUPABASE DATA LOADING ---
+        async function loadAllData() {
+            try {
+                // Fetch Sentiment
+                const { data: sData, error: sError } = await supabase
+                    .from('sentiment_logs')
+                    .select('*')
+                    .order('date_entry', { ascending: false });
+
+                if (sError) throw sError;
+
+                sentimentHistory = sData.map(item => ({
+                    id: item.id,
+                    date: formatDateToHr(item.date_entry),
+                    raw: item.raw_data,
+                    score: parseFloat(item.score).toFixed(1),
+                    rawScore: parseFloat(item.raw_score).toFixed(1),
+                    trendSma: item.trend_sma,
+                    signal: item.signal
+                }));
+
+                // Fetch Swing
+                const { data: swData, error: swError } = await supabase
+                    .from('swing_logs')
+                    .select('*')
+                    .order('date_entry', { ascending: false });
+
+                if (swError) throw swError;
+
+                swingHistory = swData.map(item => ({
+                    id: item.id,
+                    date: formatDateToHr(item.date_entry),
+                    raw: item.raw_data,
+                    score: parseFloat(item.score).toFixed(1),
+                    rawScore: parseFloat(item.raw_score).toFixed(1),
+                    trendSma: item.trend_sma,
+                    signal: item.signal,
+                    adjustment: item.adjustment ? parseFloat(item.adjustment) : 0
+                }));
+
+                renderSentimentHistoryTable();
+                renderSwingHistoryTable();
+                updateAllDisplays();
+            } catch (err) {
+                console.error('Error loading Supabase data:', err);
+                if (err.code !== 'PGRST116') {
+                   // Ignore specific "no rows" errors if applicable
+                }
+            }
+        }
+
+        // Helpers
+        function formatDateToHr(isoDate) {
+            if (!isoDate) return '';
+            const d = new Date(isoDate);
+            return d.toLocaleDateString('hr-HR');
+        }
+        
+        function normalize(v, minB, maxB) { return Math.max(0, Math.min(100, ((v - minB) / (maxB - minB)) * 100)); }
+        function normalizeInverted(v, minB, maxB) { return Math.max(0, Math.min(100, 100 - (((v - minB) / (maxB - minB)) * 100))); }
+        function parseHrDate(str) { const [d, m, y] = str.split('.').map(Number); return new Date(y, m - 1, d); }
+        
+        function getSortedHistory(h, desc = false) {
+            return [...h].sort((a, b) => desc ? parseHrDate(b.date) - parseHrDate(a.date) : parseHrDate(a.date) - parseHrDate(b.date));
+        }
+
+        function formatValWithDelta(val, prevVal, inverted = false) {
+            if (prevVal === undefined || prevVal === null) return val;
+            const diff = val - prevVal;
+            if (Math.abs(diff) < 0.01) return val;
+            let colorClass = 'delta-neutral';
+            if (diff > 0) colorClass = inverted ? 'delta-down' : 'delta-up';
+            if (diff < 0) colorClass = inverted ? 'delta-up' : 'delta-down';
+            return `${val}<span class="${colorClass}">${diff > 0 ? '▲' : '▼'}</span>`;
+        }
+
+        function getHistoricalSMA(history, currentDateInput, n) {
+            const targetDate = currentDateInput ? new Date(currentDateInput) : new Date();
+            targetDate.setHours(0, 0, 0, 0);
+            const pastEntries = history.filter(e => parseHrDate(e.date) < targetDate);
+            if (pastEntries.length === 0) return null;
+            const sorted = getSortedHistory(pastEntries, true); // Newest first
+            const recent = sorted.slice(0, n);
+            const sum = recent.reduce((acc, curr) => acc + parseFloat(curr.score || 0), 0);
+            return sum / recent.length;
+        }
+
+        function clearForm(formId) {
+            document.getElementById(formId).reset();
+            setDefaultDates();
+            if (formId === 'sentimentForm') cancelEditSentiment();
+            else if (formId === 'swingForm') cancelEditSwing();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('sentimentForm').addEventListener('submit', e => { e.preventDefault(); calculateAndSaveSentiment(); });
+            document.getElementById('swingForm').addEventListener('submit', e => { e.preventDefault(); calculateAndSaveSwing(); });
+        }
+
+        // --- SENTIMENT LOGIC ---
+        async function calculateAndSaveSentiment() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            const inputs = {
+                cnn: parseFloat(document.getElementById('cnn').value),
+                naaim: parseFloat(document.getElementById('naaim').value),
+                aaii_spread: parseFloat(document.getElementById('aaii_spread').value),
+                pcr: parseFloat(document.getElementById('pcr').value),
+                rsi: parseFloat(document.getElementById('rsi').value),
+                vix: parseFloat(document.getElementById('vix').value),
+                dxy_30wma: document.getElementById('dxy_30wma').value,
+                dxy_momentum: document.getElementById('dxy_momentum').value
+            };
+
+            const scores = {
+                cnn: inputs.cnn,
+                naaim: normalize(inputs.naaim, 30, 100),
+                aaii: normalize(inputs.aaii_spread, -20, 30),
+                pcr: normalizeInverted(inputs.pcr, 0.5, 1.5),
+                rsi: normalize(inputs.rsi, 30, 70),
+                vix: normalizeInverted(inputs.vix, 12, 40),
+                dxy_trend: inputs.dxy_30wma === 'gore' ? 100 : inputs.dxy_30wma === 'dolje' ? 0 : 50,
+                dxy_momentum: inputs.dxy_momentum === 'bullish_cross' ? 100 : inputs.dxy_momentum === 'bearish_cross' ? 0 : 50
+            };
+
+            let rawScore = Object.keys(WEIGHTS_SENTIMENT).reduce((sum, k) => sum + scores[k] * WEIGHTS_SENTIMENT[k], 0);
+            rawScore = Math.max(0, Math.min(100, rawScore));
+
+            const dateVal = document.getElementById('dateSentiment').value;
+            const sma5 = getHistoricalSMA(sentimentHistory, dateVal, 5);
+            
+            let final = rawScore;
+            let trendVal = sma5;
+            if (sma5 !== null) final = (rawScore * 0.65) + (sma5 * 0.35);
+            else trendVal = rawScore;
+            final = Math.max(0, Math.min(100, final));
+
+            let signal, sigClass;
+            if (final <= 10) { signal = 'EXTREME BULLISH'; sigClass = 'extreme-bullish'; }
+            else if (final <= 30) { signal = 'BULLISH'; sigClass = 'bullish'; }
+            else if (final <= 70) { signal = 'NEUTRAL'; sigClass = 'neutral'; }
+            else if (final <= 90) { signal = 'BEARISH'; sigClass = 'bearish'; }
+            else { signal = 'EXTREME BEARISH'; sigClass = 'extreme-bearish'; }
+
+            // DB Object
+            const dbData = {
+                date_entry: dateVal,
+                score: final.toFixed(1),
+                raw_score: rawScore.toFixed(1),
+                trend_sma: trendVal !== null ? trendVal.toFixed(1) : '---',
+                signal: signal,
+                raw_data: inputs
+            };
+
+            try {
+                if (editingSentimentId) {
+                    const { error } = await supabase.from('sentiment_logs').update(dbData).eq('id', editingSentimentId);
+                    if(error) throw error;
+                    cancelEditSentiment();
+                } else {
+                    const { error } = await supabase.from('sentiment_logs').insert([dbData]);
+                    if(error) throw error;
+                }
+                
+                await loadAllData(); 
+                
+                document.getElementById('result').innerHTML = `
+                    <div class="result-box ${sigClass}">
+                        <span class="result-score">${final.toFixed(1)}</span>
+                        <span class="result-recommendation">${signal}</span>
+                        <div class="result-details">Raw: ${rawScore.toFixed(1)} | Trend: ${trendVal ? trendVal.toFixed(1) : '?'}</div>
+                    </div>`;
+                document.getElementById('result').style.display = 'block';
+                clearForm('sentimentForm');
+
+            } catch (err) {
+                alert('Greška pri spremanju: ' + err.message);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        // --- SWING LOGIC ---
+        async function calculateAndSaveSwing() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            const inp = {
+                rsi: parseFloat(document.getElementById('swing_rsi').value),
+                fomo: parseFloat(document.getElementById('swing_fomo').value), 
+                fomoav: parseFloat(document.getElementById('swing_fomoav').value),
+                cnn: parseFloat(document.getElementById('swing_cnn').value),
+                dxy: document.getElementById('swing_dxy').value,
+                aaii: parseFloat(document.getElementById('swing_aaii').value),
+                vix: parseFloat(document.getElementById('swing_vix').value),
+                vix_change: parseFloat(document.getElementById('swing_vix_change').value)
+            };
+
+            const score_rsi = normalize(inp.rsi, 30, 70);
+            const score_fomo = normalize(inp.fomo, 15, 85); 
+            const score_fomoav = normalize(inp.fomoav, 15, 85);
+            const score_cnn = inp.cnn;
+            const dxyScores = { strong_up: 100, up: 75, flat: 50, down: 25, strong_down: 0 };
+            const score_dxy = dxyScores[inp.dxy] !== undefined ? dxyScores[inp.dxy] : 50;
+            const score_aaii = normalize(inp.aaii, 25, 50);
+            const score_vix = normalizeInverted(inp.vix, 15, 35);
+            const score_vix_change = inp.vix_change > 10 ? 0 : inp.vix_change > 5 ? 25 : inp.vix_change > 0 ? 50 : inp.vix_change > -5 ? 65 : 85;
+
+            let rawScore = (score_rsi * 0.19) + (score_fomo * 0.14) + (score_fomoav * 0.10) + (score_cnn * 0.17) + (score_dxy * 0.12) + (score_aaii * 0.12) + (score_vix * 0.09) + (score_vix_change * 0.07);
+
+            let totalAdjustment = 0;
+            if (inp.vix < 13) { const p = (13 - inp.vix) * 3.0; rawScore += p; totalAdjustment += p; }
+            if (inp.vix > 40) { const b = (inp.vix - 40) * 1.5; rawScore -= b; totalAdjustment -= b; }
+            if (inp.fomo < 15) { const b = (15 - inp.fomo) * 0.5; rawScore -= b; totalAdjustment -= b; }
+            if (inp.fomo > 85) { const m = (inp.fomo - 85) * 0.5; rawScore += m; totalAdjustment += m; }
+            if (inp.fomoav < 15) { const b = (15 - inp.fomoav) * 0.5; rawScore -= b; totalAdjustment -= b; }
+            if (inp.fomoav > 85) { const m = (inp.fomoav - 85) * 0.5; rawScore += m; totalAdjustment += m; }
+
+            rawScore = Math.max(0, Math.min(100, rawScore));
+
+            const dateVal = document.getElementById('dateSwing').value;
+            const sma5 = getHistoricalSMA(swingHistory, dateVal, 5);
+            
+            let final = rawScore;
+            let trendVal = sma5;
+            if (sma5 !== null) final = (rawScore * 0.65) + (sma5 * 0.35);
+            else trendVal = rawScore;
+            final = Math.max(0, Math.min(100, final));
+
+            let signal;
+            if (final <= 25) signal = 'STRONG BUY';
+            else if (final <= 40) signal = 'BUY';
+            else if (final <= 60) signal = 'HOLD';
+            else if (final <= 75) signal = 'SELL';
+            else signal = 'STRONG SELL';
+
+            const dbData = {
+                date_entry: dateVal,
+                score: final.toFixed(1),
+                raw_score: rawScore.toFixed(1),
+                trend_sma: trendVal !== null ? trendVal.toFixed(1) : '---',
+                signal: signal,
+                adjustment: totalAdjustment.toFixed(2),
+                raw_data: inp
+            };
+
+            try {
+                if (editingSwingId) {
+                    const { error } = await supabase.from('swing_logs').update(dbData).eq('id', editingSwingId);
+                    if(error) throw error;
+                    cancelEditSwing();
+                } else {
+                    const { error } = await supabase.from('swing_logs').insert([dbData]);
+                    if(error) throw error;
+                }
+                
+                await loadAllData();
+                updateSwingGauge(final, signal);
+                
+                let resClass = (final <= 25 || final > 75) ? (final <= 25 ? 'extreme-bullish' : 'extreme-bearish') : (final <= 40 ? 'bullish' : (final <= 60 ? 'neutral' : 'bearish'));
+                document.getElementById('swingResult').innerHTML = `
+                    <div class="result-box ${resClass}">
+                        <span class="result-score">${final.toFixed(1)}</span>
+                        <span class="result-recommendation">${signal}</span>
+                        <div class="result-details">Raw: ${rawScore.toFixed(1)} | Trend: ${trendVal ? trendVal.toFixed(1) : '?'}</div>
+                    </div>`;
+                document.getElementById('swingResult').style.display = 'block';
+                clearForm('swingForm');
+
+            } catch (err) {
+                alert('Greška: ' + err.message);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        // --- IMPORT JSON TO SUPABASE ---
+        async function importToSupabase(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!confirm(`Učitati ${data.sentiment?.length || 0} sentiment i ${data.swing?.length || 0} swing unosa u bazu? Ovo može potrajati.`)) return;
+                    
+                    document.getElementById('loadingOverlay').style.display = 'flex';
+
+                    // Convert local format to DB format
+                    const sentRows = (data.sentiment || []).map(x => {
+                        // Parsiranje datuma DD.MM.YYYY -> YYYY-MM-DD
+                        const [d,m,y] = x.date.split('.');
+                        return {
+                            date_entry: `${y}-${m}-${d}`,
+                            score: parseFloat(x.score),
+                            raw_score: parseFloat(x.rawScore || x.score),
+                            trend_sma: x.trendSma,
+                            signal: x.signal,
+                            raw_data: x.raw
+                        };
+                    });
+
+                    const swingRows = (data.swing || []).map(x => {
+                        const [d,m,y] = x.date.split('.');
+                        return {
+                            date_entry: `${y}-${m}-${d}`,
+                            score: parseFloat(x.score),
+                            raw_score: parseFloat(x.rawScore || x.score),
+                            trend_sma: x.trendSma,
+                            signal: x.signal,
+                            adjustment: x.adjustment,
+                            raw_data: x.raw
+                        };
+                    });
+
+                    // Insert in batches
+                    if(sentRows.length) {
+                        const { error } = await supabase.from('sentiment_logs').insert(sentRows);
+                        if(error) throw error;
+                    }
+                    if(swingRows.length) {
+                         const { error } = await supabase.from('swing_logs').insert(swingRows);
+                         if(error) throw error;
+                    }
+
+                    await loadAllData();
+                    alert('Podaci uspješno učitani u oblak!');
+
+                } catch (err) {
+                    alert('Greška kod importa: ' + err.message);
+                    console.error(err);
+                } finally {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- EXPORT FROM SUPABASE ---
+        async function exportAllData() {
+            // Re-use current loaded data
+            const data = {
+                version: '21.4',
+                exportDate: new Date().toISOString(),
+                sentiment: sentimentHistory,
+                swing: swingHistory
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `sentiment_cloud_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        async function deleteAllData() {
+            if (!confirm('⚠️ PAŽNJA: Ovo će obrisati SVE podatke iz baze podataka! Ovu akciju nije moguće poništiti. Jeste li sigurni?')) return;
+            
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            try {
+                // Brisanje redova koji imaju ID > 0 (svi)
+                const { error: err1 } = await supabase.from('sentiment_logs').delete().gt('id', 0);
+                if (err1) throw err1;
+                
+                const { error: err2 } = await supabase.from('swing_logs').delete().gt('id', 0);
+                if (err2) throw err2;
+
+                await loadAllData();
+                alert('Svi podaci su uspješno obrisani.');
+            } catch (e) {
+                alert('Greška pri brisanju: ' + e.message);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        // --- RENDER TABLES ---
+        function renderSentimentHistoryTable() {
+            const tbody = document.getElementById('historyTbody');
+            if (sentimentHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="11"><div class="empty-state">Nema unosa</div></td></tr>`; return; }
+            const sorted = getSortedHistory(sentimentHistory, true);
+            
+            tbody.innerHTML = sorted.map((e, idx) => {
+                const prev = sorted[idx + 1];
+                let sigClass = ['EXTREME BULLISH', 'BULLISH'].includes(e.signal) ? 'sig-buy' : ['BEARISH', 'EXTREME BEARISH'].includes(e.signal) ? 'sig-sell' : 'sig-hold';
+                const dxyStr = (e.raw.dxy_30wma === 'gore' ? '↑' : e.raw.dxy_30wma === 'dolje' ? '↓' : '↔') + (e.raw.dxy_momentum === 'bullish_cross' ? '(B)' : e.raw.dxy_momentum === 'bearish_cross' ? '(b)' : '');
+
+                return `
+                    <tr>
+                        <td>${e.date}</td>
+                        <td><div class="score-cell-content"><span class="sc-raw">${e.rawScore||'?'}</span><span class="sc-final">${e.score}</span><span class="sc-trend">${e.trendSma||'-'}</span></div></td>
+                        <td><span class="sig-badge ${sigClass}">${e.signal}</span></td>
+                        <td>${formatValWithDelta(e.raw.cnn, prev?.raw.cnn)}</td>
+                        <td>${formatValWithDelta(e.raw.naaim, prev?.raw.naaim)}</td>
+                        <td>${formatValWithDelta(e.raw.aaii_spread, prev?.raw.aaii_spread)}</td>
+                        <td>${formatValWithDelta(e.raw.pcr, prev?.raw.pcr, true)}</td>
+                        <td>${formatValWithDelta(e.raw.rsi, prev?.raw.rsi)}</td>
+                        <td>${formatValWithDelta(e.raw.vix, prev?.raw.vix, true)}</td>
+                        <td>${dxyStr}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editSentimentEntry(${e.id})" title="Uredi">✏️</button>
+                            <button class="delete-btn" onclick="deleteSentimentEntry(${e.id})" title="Obriši">✕</button>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function renderSwingHistoryTable() {
+            const tbody = document.getElementById('swingHistoryTbody');
+            if (swingHistory.length === 0) { tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state">Nema unosa</div></td></tr>`; return; }
+            const dxyLabels = { strong_up: '↑↑', up: '↑', flat: '↔', down: '↓', strong_down: '↓↓' };
+            const sorted = getSortedHistory(swingHistory, true);
+
+            tbody.innerHTML = sorted.map((e, idx) => {
+                const prev = sorted[idx + 1];
+                let sigClass = e.signal.includes('BUY') ? 'sig-buy' : e.signal.includes('SELL') ? 'sig-sell' : 'sig-hold';
+                return `
+                    <tr>
+                        <td>${e.date}</td>
+                        <td><div class="score-cell-content"><span class="sc-raw">${e.rawScore||'?'}</span><span class="sc-final">${e.score}</span><span class="sc-trend">${e.trendSma||'-'}</span></div></td>
+                        <td><span class="sig-badge ${sigClass}">${e.signal}</span></td>
+                        <td>${formatValWithDelta(e.raw.rsi, prev?.raw.rsi)}</td>
+                        <td>${formatValWithDelta(e.raw.fomo, prev?.raw.fomo, true)}</td> 
+                        <td>${formatValWithDelta(e.raw.fomoav, prev?.raw.fomoav, true)}</td> 
+                        <td>${formatValWithDelta(e.raw.cnn, prev?.raw.cnn)}</td>
+                        <td>${dxyLabels[e.raw.dxy] || '?'}</td>
+                        <td>${formatValWithDelta(e.raw.aaii, prev?.raw.aaii)}%</td>
+                        <td>${formatValWithDelta(e.raw.vix, prev?.raw.vix, true)}</td>
+                        <td>${e.raw.vix_change}%</td>
+                        <td>
+                            <button class="edit-btn" onclick="editSwingEntry(${e.id})" title="Uredi">✏️</button>
+                            <button class="delete-btn" onclick="deleteSwingEntry(${e.id})" title="Obriši">✕</button>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        // --- EDIT / DELETE OPERATIONS ---
+        function editSentimentEntry(id) {
+            const e = sentimentHistory.find(x => x.id === id);
+            if (!e) return;
+            editingSentimentId = id;
+            document.getElementById('sentimentEditIndicator').classList.add('active');
+            document.getElementById('editingDateSentiment').textContent = e.date;
+            const [d, m, y] = e.date.split('.');
+            document.getElementById('dateSentiment').value = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            
+            document.getElementById('cnn').value = e.raw.cnn;
+            document.getElementById('naaim').value = e.raw.naaim;
+            document.getElementById('aaii_spread').value = e.raw.aaii_spread;
+            document.getElementById('pcr').value = e.raw.pcr;
+            document.getElementById('rsi').value = e.raw.rsi;
+            document.getElementById('vix').value = e.raw.vix;
+            document.getElementById('dxy_30wma').value = e.raw.dxy_30wma;
+            document.getElementById('dxy_momentum').value = e.raw.dxy_momentum;
+            document.getElementById('sentimentSubmitBtn').textContent = 'Ažuriraj Unos';
+        }
+
+        function cancelEditSentiment() {
+            editingSentimentId = null;
+            document.getElementById('sentimentEditIndicator').classList.remove('active');
+            document.getElementById('sentimentSubmitBtn').textContent = 'Izračunaj Sentiment';
+        }
+
+        async function deleteSentimentEntry(id) {
+            if (!confirm("Obrisati ovaj unos iz baze?")) return;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            try {
+                const { error } = await supabase.from('sentiment_logs').delete().eq('id', id);
+                if (error) throw error;
+                await loadAllData();
+            } catch (e) { alert(e.message); } finally { document.getElementById('loadingOverlay').style.display = 'none'; }
+        }
+
+        function editSwingEntry(id) {
+            const e = swingHistory.find(x => x.id === id);
+            if (!e) return;
+            editingSwingId = id;
+            document.getElementById('swingEditIndicator').classList.add('active');
+            document.getElementById('editingDateSwing').textContent = e.date;
+            const [d, m, y] = e.date.split('.');
+            document.getElementById('dateSwing').value = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            
+            document.getElementById('swing_rsi').value = e.raw.rsi;
+            document.getElementById('swing_fomo').value = e.raw.fomo;
+            document.getElementById('swing_fomoav').value = e.raw.fomoav;
+            document.getElementById('swing_cnn').value = e.raw.cnn;
+            document.getElementById('swing_dxy').value = e.raw.dxy;
+            document.getElementById('swing_aaii').value = e.raw.aaii;
+            document.getElementById('swing_vix').value = e.raw.vix;
+            document.getElementById('swing_vix_change').value = e.raw.vix_change;
+            document.getElementById('swingSubmitBtn').textContent = 'Ažuriraj Unos';
+        }
+
+        function cancelEditSwing() {
+            editingSwingId = null;
+            document.getElementById('swingEditIndicator').classList.remove('active');
+            document.getElementById('swingSubmitBtn').textContent = 'Izračunaj Swing Signal';
+        }
+
+        async function deleteSwingEntry(id) {
+            if (!confirm("Obrisati ovaj unos iz baze?")) return;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            try {
+                const { error } = await supabase.from('swing_logs').delete().eq('id', id);
+                if (error) throw error;
+                await loadAllData();
+            } catch (e) { alert(e.message); } finally { document.getElementById('loadingOverlay').style.display = 'none'; }
+        }
+
+        // --- VISUALIZATIONS ---
+        function updateSwingGauge(score, signal) {
+            const gauge = document.getElementById('gaugeFill');
+            const offset = 251.2 - (score / 100) * 251.2;
+            gauge.style.strokeDashoffset = offset;
+            let color = score <= 25 ? '#10b981' : score <= 40 ? '#7cb342' : score <= 60 ? '#f59e0b' : score <= 75 ? '#ff9800' : '#ef4444';
+            gauge.style.stroke = color;
+            document.getElementById('swingGaugeValue').textContent = score.toFixed(1);
+            document.getElementById('swingGaugeLabel').textContent = signal || 'UNESI';
+            document.getElementById('swingSignalBox').style.display = 'block';
+            let boxClass = 'signal-box ' + ((score <= 25 || score > 75) ? (score <= 25 ? 'extreme-bullish' : 'extreme-bearish') : (score <= 40 ? 'bullish' : (score <= 60 ? 'neutral' : 'bearish')));
+            document.getElementById('swingSignalBox').className = boxClass;
+            document.getElementById('swingSignalText').textContent = signal;
+        }
+
+        function updateAllDisplays() { updateSentimentChart(); updateDashboard(); updateSwingDashboard(); updateDataStats(); }
+        
+        function updateDataStats() {
+            document.getElementById('dataStats').innerHTML = `
+                <div class="stat-card" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border: 2px solid var(--success-border);">
+                    <div class="stat-label" style="color: var(--success-text);">📈 Sentiment</div>
+                    <div class="stat-value" style="color: var(--success-text);">${sentimentHistory.length}</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border: 2px solid #d8b4fe;">
+                    <div class="stat-label" style="color: #7c3aed;">⚡ Swing</div>
+                    <div class="stat-value" style="color: #6d28d9;">${swingHistory.length}</div>
+                </div>`;
+        }
+
+        function setChartPeriod(days) {
+            chartPeriodDays = days;
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.getAttribute('data-period')) === days) btn.classList.add('active');
+            });
+            updateSentimentChart();
+        }
+
+        function filterDataByPeriod(data) {
+            if (chartPeriodDays === 0) return data;
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - chartPeriodDays);
+            return data.filter(entry => parseHrDate(entry.date) >= cutoffDate);
+        }
+
+        function updateSentimentChart() {
+            if (!sentimentChart) return;
+            const filteredSentiment = filterDataByPeriod(sentimentHistory);
+            const filteredSwing = filterDataByPeriod(swingHistory);
+            
+            const all = [...filteredSentiment, ...filteredSwing]
+                .map(e => e.date)
+                .filter((v, i, a) => a.indexOf(v) === i)
+                .sort((a, b) => parseHrDate(a) - parseHrDate(b));
+            
+            sentimentChart.data.labels = all;
+            sentimentChart.data.datasets[0].data = all.map(d => filteredSentiment.find(e => e.date === d)?.score);
+            sentimentChart.data.datasets[1].data = all.map(d => filteredSwing.find(e => e.date === d)?.score);
+            sentimentChart.update();
+        }
+
+        function initSentimentChart() {
+            const ctx = document.getElementById('sentimentChart').getContext('2d');
+            const bgZones = { id: 'backgroundZones', beforeDraw: (chart) => {
+                const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+                const zones = [{from:90,to:100,c:'rgba(220,38,38,0.18)'}, {from:70,to:90,c:'rgba(239,68,68,0.14)'}, {from:30,to:70,c:'rgba(250,204,21,0.10)'}, {from:10,to:30,c:'rgba(34,197,94,0.14)'}, {from:0,to:10,c:'rgba(5,150,105,0.18)'}];
+                ctx.save();
+                zones.forEach(z => { ctx.fillStyle=z.c; ctx.fillRect(left, y.getPixelForValue(z.to), right-left, y.getPixelForValue(z.from)-y.getPixelForValue(z.to)); });
+                ctx.restore();
+            }};
+
+            sentimentChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Sentiment', data: [], borderColor: '#3b82f6', tension: 0.4 }, { label: 'Swing', data: [], borderColor: '#a855f7', borderDash: [5,5], tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } },
+                plugins: [bgZones]
+            });
+        }
+
+        // --- DASHBOARD HELPERS ---
+        function calculateVolatility(data) {
+            if (data.length < 2) return 0;
+            const vals = data.map(e => parseFloat(e.score));
+            const mean = vals.reduce((a,b)=>a+b,0)/vals.length;
+            return Math.sqrt(vals.reduce((a,b)=>a+Math.pow(b-mean,2),0)/vals.length);
+        }
+
+        // --- UI UTILS ---
+        function initTheme() { if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode'); }
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); loadTradingViewWidget(); }
+        function setDefaultDates() { const t = new Date().toISOString().split('T')[0]; document.getElementById('dateSentiment').value = t; document.getElementById('dateSwing').value = t; }
+        function openTab(e, name) { document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(name).style.display = 'block'; if (e) e.currentTarget.classList.add('active'); }
+        function loadTradingViewWidget() {
+            const c = document.getElementById('tradingview-widget-container'); if(!c)return; c.innerHTML='';
+            const s = document.createElement('script'); s.src='https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js'; s.async=true;
+            s.innerHTML = JSON.stringify({ symbols:[{proName:"FOREXCOM:SPXUSD",title:"S&P 500"},{proName:"FOREXCOM:NSXUSD",title:"Nasdaq 100"},{proName:"TVC:VIX",description:"VIX"},{proName:"TVC:GOLD",description:"Zlato"}], colorTheme: document.body.classList.contains('dark-mode')?"dark":"light", isTransparent:true, displayMode:"adaptive", locale:"en" });
+            c.appendChild(s);
+        }
+
+        // --- DASHBOARD UPDATES ---
+        function updateDashboard() {
+            const container = document.getElementById('sentimentDashboard');
+            if(sentimentHistory.length === 0) { container.innerHTML = '<div class="card"><div class="empty-state">Nema podataka</div></div>'; return; }
+            const sorted = getSortedHistory(sentimentHistory, true);
+            const latest = sorted[0];
+            const score = parseFloat(latest.score);
+            container.innerHTML = `
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header"><span class="dashboard-icon">📊</span><h3 class="dashboard-title">Trenutni Sentiment</h3></div>
+                    <div class="dashboard-value">${score}</div>
+                    <div class="dashboard-label">${latest.signal}</div>
+                    <div class="dashboard-sublabel">${latest.date}</div>
+                </div>`;
+        }
+        function updateSwingDashboard() {
+            const container = document.getElementById('swingDashboard');
+            if(swingHistory.length === 0) { container.innerHTML = '<div class="card"><div class="empty-state">Nema podataka</div></div>'; return; }
+            const sorted = getSortedHistory(swingHistory, true);
+            const latest = sorted[0];
+            const score = parseFloat(latest.score);
+            container.innerHTML = `
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header"><span class="dashboard-icon">⚡</span><h3 class="dashboard-title">Swing Signal</h3></div>
+                    <div class="dashboard-value">${score}</div>
+                    <div class="dashboard-label">${latest.signal}</div>
+                    <div class="dashboard-sublabel">${latest.date}</div>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
