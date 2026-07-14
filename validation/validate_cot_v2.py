@@ -47,15 +47,16 @@ def cftc_zip_fallback():
     return x,'CFTC annual TFF ZIP archives'
 
 def load_cftc():
-    try: x,src=cftc_socrata()
-    except Exception as e: print('Socrata failed',e); x,src=cftc_zip_fallback()
+    x,src=cftc_zip_fallback()
     x=x.dropna(subset=['date','oi']).copy(); x['code']=x['code'].astype(str).str.strip(); x['p']=x['code'].map({'13874A':0,'13874+':1}).fillna(9)
     x=x.sort_values(['date','p']).drop_duplicates('date').drop(columns='p').reset_index(drop=True)
     return x,src
 
 def load_spy():
     try:
-        x=pd.read_csv(io.BytesIO(get('https://stooq.com/q/d/l/?s=spy.us&i=d').content)); x.columns=x.columns.str.lower(); x=x.rename(columns={'date':'date','close':'close'}); src='Stooq SPY daily close'
+        x=pd.read_csv(io.BytesIO(get('https://stooq.com/q/d/l/?s=spy.us&i=d').content)); x.columns=x.columns.str.lower()
+        if not {'date','close'}.issubset(x.columns): raise RuntimeError(f'Unexpected Stooq columns: {list(x.columns)}')
+        src='Stooq SPY daily close'
     except Exception as e:
         print('Stooq failed',e); p1=int(datetime(2005,1,1,tzinfo=timezone.utc).timestamp()); p2=int((datetime.now(timezone.utc)+timedelta(days=2)).timestamp())
         j=get('https://query1.finance.yahoo.com/v8/finance/chart/SPY',{'period1':p1,'period2':p2,'interval':'1d','events':'history','includeAdjustedClose':'true'}).json()['chart']['result'][0]
