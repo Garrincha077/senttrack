@@ -1,5 +1,5 @@
 from __future__ import annotations
-import io, json, zipfile
+import io, json, re, zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np
@@ -10,16 +10,23 @@ import validate_cot_v2 as v
 OUT=Path('validation-output'); OUT.mkdir(exist_ok=True)
 LH={26:.50,52:.30,156:.20}
 
+def canon(s): return re.sub(r'[^a-z0-9]','',str(s).lower())
+def find_col(cols,*names):
+    m={canon(c):c for c in cols}
+    for n in names:
+        if canon(n) in m: return m[canon(n)]
+    raise KeyError(f'Missing {names}; available={list(cols)[:30]}')
+
 def load_legacy():
     urls=['https://www.cftc.gov/files/dea/history/deacot1986_2016.zip']+[f'https://www.cftc.gov/files/dea/history/deacot{y}.zip' for y in range(2017,datetime.now(timezone.utc).year+1)]
     fs=[]; notes=[]
     for u in urls:
         try:
             z=zipfile.ZipFile(io.BytesIO(v.get(u,n=2).content)); name=max(z.namelist(),key=lambda n:z.getinfo(n).file_size)
-            a=pd.read_csv(z.open(name),low_memory=False); a.columns=a.columns.str.strip(); d=next(c for c in a if 'Report_Date' in c or 'As_of_Date' in c)
-            m={'date':d,'code':'CFTC_Contract_Market_Code','market':'Market_and_Exchange_Names','oi':'Open_Interest_All','large_l':'Noncommercial_Positions_Long_All','large_s':'Noncommercial_Positions_Short_All','comm_l':'Commercial_Positions_Long_All','comm_s':'Commercial_Positions_Short_All','small_l':'Nonreportable_Positions_Long_All','small_s':'Nonreportable_Positions_Short_All'}
+            a=pd.read_csv(z.open(name),low_memory=False); a.columns=a.columns.str.strip()
+            m={'date':find_col(a.columns,'Report_Date_as_YYYY-MM-DD','As_of_Date_In_Form_YYMMDD','As of Date in Form YYMMDD'),'code':find_col(a.columns,'CFTC_Contract_Market_Code','CFTC Contract Market Code'),'market':find_col(a.columns,'Market_and_Exchange_Names','Market and Exchange Names'),'oi':find_col(a.columns,'Open_Interest_All','Open Interest All'),'large_l':find_col(a.columns,'Noncommercial_Positions_Long_All','Noncommercial Positions Long All'),'large_s':find_col(a.columns,'Noncommercial_Positions_Short_All','Noncommercial Positions Short All'),'comm_l':find_col(a.columns,'Commercial_Positions_Long_All','Commercial Positions Long All'),'comm_s':find_col(a.columns,'Commercial_Positions_Short_All','Commercial Positions Short All'),'small_l':find_col(a.columns,'Nonreportable_Positions_Long_All','Nonreportable Positions Long All'),'small_s':find_col(a.columns,'Nonreportable_Positions_Short_All','Nonreportable Positions Short All')}
             b=a[a[m['code']].astype(str).str.strip().eq('13874A')][list(m.values())].rename(columns={vv:k for k,vv in m.items()})
-            b['date']=pd.to_datetime(b.date.astype(str).str.zfill(6),format='%y%m%d',errors='coerce') if 'YYMMDD' in d.upper() else pd.to_datetime(b.date,errors='coerce')
+            b['date']=pd.to_datetime(b.date.astype(str).str.zfill(6),format='%y%m%d',errors='coerce') if 'yymmdd' in canon(m['date']) else pd.to_datetime(b.date,errors='coerce')
             fs.append(b); notes.append(f'{u}: {len(b)} rows')
         except Exception as e:
             note=f'{u}: skipped {type(e).__name__}: {e}'; notes.append(note); print(note)
