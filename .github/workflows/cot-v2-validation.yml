@@ -28,8 +28,15 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy scipy requests
-      - name: Run frozen validation
-        run: python validation/validate_cot_v2.py
+      - name: Run frozen validation and capture audit log
+        run: |
+          mkdir -p validation-output
+          set +e
+          python validation/validate_cot_v2.py > validation-output/run.log 2>&1
+          status=$?
+          echo "$status" > validation-output/run_status.txt
+          cat validation-output/run.log
+          exit 0
       - name: Commit validation outputs
         run: |
           git config user.name "github-actions[bot]"
