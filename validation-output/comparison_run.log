@@ -1,16 +1,33 @@
+https://www.cftc.gov/files/dea/history/deacot1986_2016.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2017.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2018.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2019.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2020.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2021.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2022.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2023.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2024.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2025.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2026.zip: skipped StopIteration: 
 Traceback (most recent call last):
-  File "/home/runner/work/senttrack/senttrack/validation/compare_legacy.py", line 75, in <module>
+  File "/home/runner/work/senttrack/senttrack/validation/compare_legacy.py", line 77, in <module>
     if __name__=='__main__': main()
                              ^^^^^^
-  File "/home/runner/work/senttrack/senttrack/validation/compare_legacy.py", line 65, in main
+  File "/home/runner/work/senttrack/senttrack/validation/compare_legacy.py", line 67, in main
     x,notes=load_legacy(); p,ps=v.load_spy(); d=v.attach(compute_legacy(x),p); audit,bins=horizon_audit(d,'legacy_score')
             ^^^^^^^^^^^^^
-  File "/home/runner/work/senttrack/senttrack/validation/compare_legacy.py", line 25, in load_legacy
-    x=pd.concat(fs,ignore_index=True).dropna(subset=['date','oi'])
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/core/reshape/concat.py", line 407, in concat
-    objs, keys, ndims = _clean_keys_and_objs(objs, keys)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/core/reshape/concat.py", line 808, in _clean_keys_and_objs
-    raise ValueError("No objects to concatenate")
-ValueError: No objects to concatenate
+  File "/home/runner/work/senttrack/senttrack/validation/compare_legacy.py", line 26, in load_legacy
+    if not fs: raise RuntimeError('No legacy files parsed\n'+'\n'.join(notes))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: No legacy files parsed
+https://www.cftc.gov/files/dea/history/deacot1986_2016.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2017.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2018.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2019.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2020.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2021.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2022.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2023.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2024.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2025.zip: skipped StopIteration: 
+https://www.cftc.gov/files/dea/history/deacot2026.zip: skipped StopIteration: 
