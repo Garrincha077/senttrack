@@ -1,12 +1,6 @@
 name: COT v2 validation
 
 on:
-  push:
-    branches: [cot-v2-validation]
-    paths:
-      - validation/validate_cot_v2.py
-      - validation/compare_legacy.py
-      - .github/workflows/cot-v2-validation.yml
   pull_request:
     branches: [main]
     paths:
