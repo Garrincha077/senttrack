@@ -1,2 +1,2 @@
 tff=0
-comparison=1
+comparison=0
