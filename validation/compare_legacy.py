@@ -21,7 +21,9 @@ def load_legacy():
             b=a[a[m['code']].astype(str).str.strip().eq('13874A')][list(m.values())].rename(columns={vv:k for k,vv in m.items()})
             b['date']=pd.to_datetime(b.date.astype(str).str.zfill(6),format='%y%m%d',errors='coerce') if 'YYMMDD' in d.upper() else pd.to_datetime(b.date,errors='coerce')
             fs.append(b); notes.append(f'{u}: {len(b)} rows')
-        except Exception as e: notes.append(f'{u}: skipped {type(e).__name__}: {e}')
+        except Exception as e:
+            note=f'{u}: skipped {type(e).__name__}: {e}'; notes.append(note); print(note)
+    if not fs: raise RuntimeError('No legacy files parsed\n'+'\n'.join(notes))
     x=pd.concat(fs,ignore_index=True).dropna(subset=['date','oi'])
     for c in ['oi','large_l','large_s','comm_l','comm_s','small_l','small_s']: x[c]=pd.to_numeric(x[c],errors='coerce')
     x=x.sort_values('date').drop_duplicates('date').reset_index(drop=True)
