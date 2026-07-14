@@ -5,11 +5,13 @@ on:
     branches: [cot-v2-validation]
     paths:
       - validation/validate_cot_v2.py
+      - validation/compare_legacy.py
       - .github/workflows/cot-v2-validation.yml
   pull_request:
     branches: [main]
     paths:
       - validation/validate_cot_v2.py
+      - validation/compare_legacy.py
       - .github/workflows/cot-v2-validation.yml
 
 permissions:
@@ -28,14 +30,22 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy scipy requests
-      - name: Run frozen validation and capture audit log
+      - name: Run frozen validations and capture audit logs
         run: |
           mkdir -p validation-output
           set +e
-          python validation/validate_cot_v2.py > validation-output/run.log 2>&1
-          status=$?
-          echo "$status" > validation-output/run_status.txt
-          cat validation-output/run.log
+          python validation/validate_cot_v2.py > validation-output/tff_run.log 2>&1
+          tff_status=$?
+          if [ "$tff_status" -eq 0 ]; then
+            python validation/compare_legacy.py > validation-output/comparison_run.log 2>&1
+            comparison_status=$?
+          else
+            comparison_status=99
+            echo "Comparison skipped because TFF run failed" > validation-output/comparison_run.log
+          fi
+          printf "tff=%s\ncomparison=%s\n" "$tff_status" "$comparison_status" > validation-output/run_status.txt
+          cat validation-output/tff_run.log
+          cat validation-output/comparison_run.log
           exit 0
       - name: Commit validation outputs
         run: |
@@ -45,6 +55,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No output changes"
           else
-            git commit -m "Add COT v2 historical validation results"
+            git commit -m "Add COT model comparison validation results"
             git push origin HEAD:cot-v2-validation
           fi
