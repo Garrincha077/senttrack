@@ -6,6 +6,11 @@ on:
     paths:
       - validation/validate_cot_v2.py
       - .github/workflows/cot-v2-validation.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - validation/validate_cot_v2.py
+      - .github/workflows/cot-v2-validation.yml
 
 permissions:
   contents: write
