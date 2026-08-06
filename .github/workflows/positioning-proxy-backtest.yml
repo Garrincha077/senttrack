@@ -6,6 +6,11 @@ on:
     paths:
       - validation/backtest_positioning_proxy.py
       - .github/workflows/positioning-proxy-backtest.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - validation/backtest_positioning_proxy.py
+      - .github/workflows/positioning-proxy-backtest.yml
 
 permissions:
   contents: write
