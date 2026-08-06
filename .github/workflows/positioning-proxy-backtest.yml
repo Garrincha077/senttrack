@@ -13,7 +13,7 @@ on:
       - .github/workflows/positioning-proxy-backtest.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   backtest:
@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: python -m pip install --upgrade pip pandas numpy scipy requests beautifulsoup4 lxml openpyxl
+        run: python -m pip install --upgrade pip pandas numpy scipy requests beautifulsoup4 lxml html5lib openpyxl
       - name: Run rigorous positioning proxy backtest
         run: |
           mkdir -p validation-output
@@ -37,14 +37,11 @@ jobs:
           status=$?
           cat validation-output/positioning_proxy_run.log
           exit $status
-      - name: Commit reproducible outputs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add validation-output/positioning_proxy_*
-          if git diff --cached --quiet; then
-            echo "No output changes"
-          else
-            git commit -m "Add positioning proxy backtest results"
-            git push origin HEAD:positioning-proxy-backtest-v1
-          fi
+      - name: Upload reproducible outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: positioning-proxy-backtest-results
+          path: validation-output/positioning_proxy_*
+          if-no-files-found: warn
+          retention-days: 30
