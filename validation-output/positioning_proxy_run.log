@@ -1,0 +1,58 @@
+{
+  "version": "POSITIONING-PROXY-BACKTEST-v1",
+  "production_impact": "NONE",
+  "cftc_exact_code": "13874A",
+  "cftc_rows": 1048,
+  "cftc_start": "2006-06-13",
+  "cftc_end": "2026-07-07",
+  "cftc_valid_156w_scores": 893,
+  "naaim_fetch_notes": [
+    "official_page_status=200",
+    "html_table_error=ImportError: `Import html5lib` failed.  Use pip or conda to install the html5lib package.",
+    "no_official_history_table_parsed"
+  ],
+  "naaim_rows": 0,
+  "aligned_rows": 0,
+  "full_sample_replication_metrics": {},
+  "walk_forward_design": {
+    "train_weeks": 104,
+    "test_weeks": 26,
+    "no_lookahead": true
+  },
+  "walk_forward_metrics": {},
+  "walk_forward_champion_by_mae": null,
+  "ria_pilot_n": 7,
+  "ria_pilot_metrics": {
+    "proxy_ria_25": {
+      "n": 0,
+      "mae": null,
+      "rmse": null,
+      "pearson": null,
+      "spearman": null,
+      "direction_accuracy": null,
+      "regime_accuracy": null,
+      "bias": null
+    },
+    "proxy_ria_50": {
+      "n": 0,
+      "mae": null,
+      "rmse": null,
+      "pearson": null,
+      "spearman": null,
+      "direction_accuracy": null,
+      "regime_accuracy": null,
+      "bias": null
+    },
+    "proxy_ria_75": {
+      "n": 0,
+      "mae": null,
+      "rmse": null,
+      "pearson": null,
+      "spearman": null,
+      "direction_accuracy": null,
+      "regime_accuracy": null,
+      "bias": null
+    }
+  },
+  "activation_gate": "BLOCKED unless exact data, sufficient RIA overlap, and stable out-of-sample evidence support a new canonical model version"
+}

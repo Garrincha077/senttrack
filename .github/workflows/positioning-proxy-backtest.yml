@@ -1,0 +1,65 @@
+name: Positioning proxy backtest
+
+on:
+  push:
+    branches: [positioning-proxy-backtest-v1]
+    paths:
+      - validation/backtest_positioning_proxy.py
+      - validation/backtest_positioning_proxy_robust.py
+      - validation/benchmark_positioning_proxy.py
+      - .github/workflows/positioning-proxy-backtest.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - validation/backtest_positioning_proxy.py
+      - validation/backtest_positioning_proxy_robust.py
+      - validation/benchmark_positioning_proxy.py
+      - .github/workflows/positioning-proxy-backtest.yml
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: positioning-proxy-backtest-v1
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy scipy requests beautifulsoup4 lxml html5lib openpyxl
+      - name: Run base positioning proxy backtest
+        run: |
+          mkdir -p validation-output
+          set +e
+          python validation/backtest_positioning_proxy.py > validation-output/positioning_proxy_run.log 2>&1
+          status=$?
+          cat validation-output/positioning_proxy_run.log
+          exit $status
+      - name: Run robust NAAIM and block-bootstrap validation
+        run: |
+          set +e
+          python validation/backtest_positioning_proxy_robust.py > validation-output/positioning_proxy_robust_run.log 2>&1
+          status=$?
+          cat validation-output/positioning_proxy_robust_run.log
+          exit $status
+      - name: Compare with naive benchmarks
+        run: |
+          set +e
+          python validation/benchmark_positioning_proxy.py > validation-output/positioning_proxy_benchmark_run.log 2>&1
+          status=$?
+          cat validation-output/positioning_proxy_benchmark_run.log
+          exit $status
+      - name: Upload reproducible outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: positioning-proxy-backtest-results
+          path: validation-output/positioning_proxy_*
+          if-no-files-found: warn
+          retention-days: 30
