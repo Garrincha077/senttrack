@@ -6,12 +6,14 @@ on:
     paths:
       - validation/backtest_positioning_proxy.py
       - validation/backtest_positioning_proxy_robust.py
+      - validation/benchmark_positioning_proxy.py
       - .github/workflows/positioning-proxy-backtest.yml
   pull_request:
     branches: [main]
     paths:
       - validation/backtest_positioning_proxy.py
       - validation/backtest_positioning_proxy_robust.py
+      - validation/benchmark_positioning_proxy.py
       - .github/workflows/positioning-proxy-backtest.yml
 
 permissions:
@@ -45,6 +47,13 @@ jobs:
           python validation/backtest_positioning_proxy_robust.py > validation-output/positioning_proxy_robust_run.log 2>&1
           status=$?
           cat validation-output/positioning_proxy_robust_run.log
+          exit $status
+      - name: Compare with naive benchmarks
+        run: |
+          set +e
+          python validation/benchmark_positioning_proxy.py > validation-output/positioning_proxy_benchmark_run.log 2>&1
+          status=$?
+          cat validation-output/positioning_proxy_benchmark_run.log
           exit $status
       - name: Upload reproducible outputs
         if: always()
