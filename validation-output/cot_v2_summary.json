@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-06T14:27:44+00:00",
+  "generated_at": "2026-08-06T14:31:58+00:00",
   "formula_version": "cot-tff-research-informed-v1-frozen",
   "sources": {
     "cftc": "CFTC annual TFF ZIP archives",
@@ -25,11 +25,11 @@
       {
         "horizon": "1W",
         "n": 882,
-        "spearman_rho": 0.03480056054723287,
-        "spearman_pvalue": 0.3018983852578546,
-        "low_bin_mean": 0.0009469207701609398,
-        "high_bin_mean": 0.014809528182438456,
-        "low_minus_high": -0.013862607412277517,
+        "spearman_rho": 0.03480732896277329,
+        "spearman_pvalue": 0.3018043130079358,
+        "low_bin_mean": 0.0009469433443472998,
+        "high_bin_mean": 0.014809514311150237,
+        "low_minus_high": -0.013862570966802937,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
@@ -37,11 +37,11 @@
       {
         "horizon": "4W",
         "n": 879,
-        "spearman_rho": 0.030602899009609885,
-        "spearman_pvalue": 0.36481207092462886,
-        "low_bin_mean": 0.0029515960461501205,
-        "high_bin_mean": 0.027612827573450224,
-        "low_minus_high": -0.024661231527300105,
+        "spearman_rho": 0.0306217166337903,
+        "spearman_pvalue": 0.36451712511740175,
+        "low_bin_mean": 0.002951610906639567,
+        "high_bin_mean": 0.027612845664212467,
+        "low_minus_high": -0.0246612347575729,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
@@ -49,11 +49,11 @@
       {
         "horizon": "8W",
         "n": 875,
-        "spearman_rho": 0.03397573743769788,
-        "spearman_pvalue": 0.31544175334458424,
-        "low_bin_mean": -0.00716474501373269,
-        "high_bin_mean": 0.042088192252972015,
-        "low_minus_high": -0.049252937266704704,
+        "spearman_rho": 0.03397777946951954,
+        "spearman_pvalue": 0.315412651691379,
+        "low_bin_mean": -0.007164775683232829,
+        "high_bin_mean": 0.04208815990653491,
+        "low_minus_high": -0.04925293558976774,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
@@ -61,11 +61,11 @@
       {
         "horizon": "13W",
         "n": 870,
-        "spearman_rho": 0.0799893266860048,
-        "spearman_pvalue": 0.01828794104618796,
-        "low_bin_mean": -0.023293331263782868,
-        "high_bin_mean": 0.045533559039826046,
-        "low_minus_high": -0.06882689030360892,
+        "spearman_rho": 0.07998364105519294,
+        "spearman_pvalue": 0.018296237225319013,
+        "low_bin_mean": -0.023293362458961936,
+        "high_bin_mean": 0.04553351389737197,
+        "low_minus_high": -0.06882687635633392,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
