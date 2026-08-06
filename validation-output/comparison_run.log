@@ -1,0 +1,59 @@
+Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex', 'nofollow"></head><body><noscript>this site requires javascript to verify your browser. please enable javascript and reload.</noscript><script nonce="eyh0xcvcxdef-fqeegdadg">']
+{
+  "legacy_verdict": "SUPPORTED_FOR_COMPOSITE",
+  "legacy_horizons": [
+    {
+      "model": "Legacy COT v1",
+      "horizon": "1W",
+      "n": 1346,
+      "spearman_rho": -0.0012216406690099733,
+      "spearman_pvalue": 0.9642844415443884,
+      "low_bin_mean": 0.0010892365995027748,
+      "high_bin_mean": 0.002197360662824969,
+      "low_minus_high": -0.0011081240633221943,
+      "low_bin_n": 167,
+      "high_bin_n": 184,
+      "directional_check": false
+    },
+    {
+      "model": "Legacy COT v1",
+      "horizon": "4W",
+      "n": 1343,
+      "spearman_rho": -0.04221176230510397,
+      "spearman_pvalue": 0.12206069590515964,
+      "low_bin_mean": 0.009265813592115951,
+      "high_bin_mean": 0.005475301434114306,
+      "low_minus_high": 0.003790512158001645,
+      "low_bin_n": 167,
+      "high_bin_n": 181,
+      "directional_check": true
+    },
+    {
+      "model": "Legacy COT v1",
+      "horizon": "8W",
+      "n": 1339,
+      "spearman_rho": -0.06693467759046001,
+      "spearman_pvalue": 0.014295255608521303,
+      "low_bin_mean": 0.01982325114421811,
+      "high_bin_mean": 0.016973786340266247,
+      "low_minus_high": 0.002849464803951863,
+      "low_bin_n": 167,
+      "high_bin_n": 179,
+      "directional_check": true
+    },
+    {
+      "model": "Legacy COT v1",
+      "horizon": "13W",
+      "n": 1334,
+      "spearman_rho": -0.05493753508887669,
+      "spearman_pvalue": 0.04483803376994706,
+      "low_bin_mean": 0.026340647856600185,
+      "high_bin_mean": 0.02075499203571921,
+      "low_minus_high": 0.005585655820880976,
+      "low_bin_n": 166,
+      "high_bin_n": 179,
+      "directional_check": true
+    }
+  ],
+  "tff_verdict": "NOT_SUPPORTED_FOR_COMPOSITE"
+}

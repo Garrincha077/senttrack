@@ -1,0 +1,2 @@
+tff=0
+comparison=0

@@ -1,0 +1,82 @@
+Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex', 'nofollow"></head><body><noscript>this site requires javascript to verify your browser. please enable javascript and reload.</noscript><script nonce="ytkjdr97bwuadakycv6qcw">']
+{
+  "generated_at": "2026-07-14T08:15:40+00:00",
+  "formula_version": "cot-tff-research-informed-v1-frozen",
+  "sources": {
+    "cftc": "CFTC annual TFF ZIP archives",
+    "price": "Yahoo Finance SPY adjusted close"
+  },
+  "data": {
+    "cftc_rows": 1048,
+    "valid_score_rows": 880,
+    "first_report_date": "2006-06-13",
+    "last_report_date": "2026-07-07",
+    "first_valid_score_date": "2009-09-01",
+    "code_counts": {
+      "13874A": 1048
+    },
+    "first_consolidated_date": null
+  },
+  "validation": {
+    "verdict": "NOT_SUPPORTED_FOR_COMPOSITE",
+    "directional_checks_passed": 0,
+    "directional_checks_total": 4,
+    "enough_extreme_observations": true,
+    "horizons": [
+      {
+        "horizon": "1W",
+        "n": 879,
+        "spearman_rho": 0.03603850668988626,
+        "spearman_pvalue": 0.28583929967022864,
+        "low_bin_mean": 0.0009469306173630392,
+        "high_bin_mean": 0.014809560239032413,
+        "low_minus_high": -0.013862629621669374,
+        "low_bin_n": 34,
+        "high_bin_n": 21,
+        "directional_check": false
+      },
+      {
+        "horizon": "4W",
+        "n": 875,
+        "spearman_rho": 0.03021023075855213,
+        "spearman_pvalue": 0.3720944844215071,
+        "low_bin_mean": 0.0029515879633124566,
+        "high_bin_mean": 0.027612864768380027,
+        "low_minus_high": -0.02466127680506757,
+        "low_bin_n": 34,
+        "high_bin_n": 21,
+        "directional_check": false
+      },
+      {
+        "horizon": "8W",
+        "n": 871,
+        "spearman_rho": 0.03383277683565236,
+        "spearman_pvalue": 0.31859537595913956,
+        "low_bin_mean": -0.007164757391769886,
+        "high_bin_mean": 0.04208820647516691,
+        "low_minus_high": -0.0492529638669368,
+        "low_bin_n": 34,
+        "high_bin_n": 21,
+        "directional_check": false
+      },
+      {
+        "horizon": "13W",
+        "n": 866,
+        "spearman_rho": 0.07790593070688168,
+        "spearman_pvalue": 0.021860659180813105,
+        "low_bin_mean": -0.023293337497980553,
+        "high_bin_mean": 0.04553353243387003,
+        "low_minus_high": -0.06882686993185058,
+        "low_bin_n": 34,
+        "high_bin_n": 21,
+        "directional_check": false
+      }
+    ]
+  },
+  "guardrails": [
+    "No parameter optimization",
+    "Tuesday positions first used from Friday/next trading close",
+    "SPY price return only",
+    "No retroactive Composite or paper-trade changes"
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "generated_at": "2026-08-06T14:32:06+00:00",
+  "legacy": {
+    "verdict": "SUPPORTED_FOR_COMPOSITE",
+    "rows": 1502,
+    "valid_score_rows": 1347,
+    "first_report_date": "1997-09-16",
+    "last_report_date": "2026-07-28",
+    "price_source": "Yahoo Finance SPY adjusted close",
+    "archive_notes": [
+      "https://www.cftc.gov/files/dea/history/deacot1986_2016.zip: 1002 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2017.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2018.zip: 53 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2019.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2020.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2021.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2022.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2023.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2024.zip: 53 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2025.zip: 52 rows",
+      "https://www.cftc.gov/files/dea/history/deacot2026.zip: 30 rows"
+    ],
+    "horizons": [
+      {
+        "model": "Legacy COT v1",
+        "horizon": "1W",
+        "n": 1346,
+        "spearman_rho": -0.0012216406690099733,
+        "spearman_pvalue": 0.9642844415443884,
+        "low_bin_mean": 0.0010892365995027748,
+        "high_bin_mean": 0.002197360662824969,
+        "low_minus_high": -0.0011081240633221943,
+        "low_bin_n": 167,
+        "high_bin_n": 184,
+        "directional_check": false
+      },
+      {
+        "model": "Legacy COT v1",
+        "horizon": "4W",
+        "n": 1343,
+        "spearman_rho": -0.04221176230510397,
+        "spearman_pvalue": 0.12206069590515964,
+        "low_bin_mean": 0.009265813592115951,
+        "high_bin_mean": 0.005475301434114306,
+        "low_minus_high": 0.003790512158001645,
+        "low_bin_n": 167,
+        "high_bin_n": 181,
+        "directional_check": true
+      },
+      {
+        "model": "Legacy COT v1",
+        "horizon": "8W",
+        "n": 1339,
+        "spearman_rho": -0.06693467759046001,
+        "spearman_pvalue": 0.014295255608521303,
+        "low_bin_mean": 0.01982325114421811,
+        "high_bin_mean": 0.016973786340266247,
+        "low_minus_high": 0.002849464803951863,
+        "low_bin_n": 167,
+        "high_bin_n": 179,
+        "directional_check": true
+      },
+      {
+        "model": "Legacy COT v1",
+        "horizon": "13W",
+        "n": 1334,
+        "spearman_rho": -0.05493753508887669,
+        "spearman_pvalue": 0.04483803376994706,
+        "low_bin_mean": 0.026340647856600185,
+        "high_bin_mean": 0.02075499203571921,
+        "low_minus_high": 0.005585655820880976,
+        "low_bin_n": 166,
+        "high_bin_n": 179,
+        "directional_check": true
+      }
+    ]
+  },
+  "tff": {
+    "generated_at": "2026-08-06T14:31:58+00:00",
+    "formula_version": "cot-tff-research-informed-v1-frozen",
+    "sources": {
+      "cftc": "CFTC annual TFF ZIP archives",
+      "price": "Yahoo Finance SPY adjusted close"
+    },
+    "data": {
+      "cftc_rows": 1051,
+      "valid_score_rows": 883,
+      "first_report_date": "2006-06-13",
+      "last_report_date": "2026-07-28",
+      "first_valid_score_date": "2009-09-01",
+      "code_counts": {
+        "13874A": 1051
+      },
+      "first_consolidated_date": null
+    },
+    "validation": {
+      "verdict": "NOT_SUPPORTED_FOR_COMPOSITE",
+      "directional_checks_passed": 0,
+      "directional_checks_total": 4,
+      "enough_extreme_observations": true,
+      "horizons": [
+        {
+          "horizon": "1W",
+          "n": 882,
+          "spearman_rho": 0.03480732896277329,
+          "spearman_pvalue": 0.3018043130079358,
+          "low_bin_mean": 0.0009469433443472998,
+          "high_bin_mean": 0.014809514311150237,
+          "low_minus_high": -0.013862570966802937,
+          "low_bin_n": 34,
+          "high_bin_n": 21,
+          "directional_check": false
+        },
+        {
+          "horizon": "4W",
+          "n": 879,
+          "spearman_rho": 0.0306217166337903,
+          "spearman_pvalue": 0.36451712511740175,
+          "low_bin_mean": 0.002951610906639567,
+          "high_bin_mean": 0.027612845664212467,
+          "low_minus_high": -0.0246612347575729,
+          "low_bin_n": 34,
+          "high_bin_n": 21,
+          "directional_check": false
+        },
+        {
+          "horizon": "8W",
+          "n": 875,
+          "spearman_rho": 0.03397777946951954,
+          "spearman_pvalue": 0.315412651691379,
+          "low_bin_mean": -0.007164775683232829,
+          "high_bin_mean": 0.04208815990653491,
+          "low_minus_high": -0.04925293558976774,
+          "low_bin_n": 34,
+          "high_bin_n": 21,
+          "directional_check": false
+        },
+        {
+          "horizon": "13W",
+          "n": 870,
+          "spearman_rho": 0.07998364105519294,
+          "spearman_pvalue": 0.018296237225319013,
+          "low_bin_mean": -0.023293362458961936,
+          "high_bin_mean": 0.04553351389737197,
+          "low_minus_high": -0.06882687635633392,
+          "low_bin_n": 34,
+          "high_bin_n": 21,
+          "directional_check": false
+        }
+      ]
+    },
+    "guardrails": [
+      "No parameter optimization",
+      "Tuesday positions first used from Friday/next trading close",
+      "SPY price return only",
+      "No retroactive Composite or paper-trade changes"
+    ]
+  },
+  "decision_rule": "Neither model is migrated or reweighted by this diagnostic run."
+}
