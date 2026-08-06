@@ -1,19 +1,19 @@
-Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex', 'nofollow"></head><body><noscript>this site requires javascript to verify your browser. please enable javascript and reload.</noscript><script nonce="3ui7y3md60uexzkswoqnmw">']
+Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex', 'nofollow"></head><body><noscript>this site requires javascript to verify your browser. please enable javascript and reload.</noscript><script nonce="krb-nx5w5vbleqv63epuva">']
 {
-  "generated_at": "2026-07-14T08:24:47+00:00",
+  "generated_at": "2026-08-06T14:16:24+00:00",
   "formula_version": "cot-tff-research-informed-v1-frozen",
   "sources": {
     "cftc": "CFTC annual TFF ZIP archives",
     "price": "Yahoo Finance SPY adjusted close"
   },
   "data": {
-    "cftc_rows": 1048,
-    "valid_score_rows": 880,
+    "cftc_rows": 1051,
+    "valid_score_rows": 883,
     "first_report_date": "2006-06-13",
-    "last_report_date": "2026-07-07",
+    "last_report_date": "2026-07-28",
     "first_valid_score_date": "2009-09-01",
     "code_counts": {
-      "13874A": 1048
+      "13874A": 1051
     },
     "first_consolidated_date": null
   },
@@ -25,48 +25,48 @@ Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charse
     "horizons": [
       {
         "horizon": "1W",
-        "n": 879,
-        "spearman_rho": 0.03603850668988626,
-        "spearman_pvalue": 0.28583929967022864,
-        "low_bin_mean": 0.0009469192707628177,
-        "high_bin_mean": 0.014809526208349945,
-        "low_minus_high": -0.013862606937587127,
+        "n": 882,
+        "spearman_rho": 0.03480703164219399,
+        "spearman_pvalue": 0.3018084449716031,
+        "low_bin_mean": 0.0009469264174199923,
+        "high_bin_mean": 0.014809559026141313,
+        "low_minus_high": -0.013862632608721321,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
       },
       {
         "horizon": "4W",
-        "n": 875,
-        "spearman_rho": 0.030202331319663066,
-        "spearman_pvalue": 0.37221958796497645,
-        "low_bin_mean": 0.002951560810050321,
-        "high_bin_mean": 0.027612833786901936,
-        "low_minus_high": -0.024661272976851615,
+        "n": 879,
+        "spearman_rho": 0.030610726434503712,
+        "spearman_pvalue": 0.3646893664714514,
+        "low_bin_mean": 0.002951579046893595,
+        "high_bin_mean": 0.027612814323271,
+        "low_minus_high": -0.024661235276377404,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
       },
       {
         "horizon": "8W",
-        "n": 871,
-        "spearman_rho": 0.03382505863111377,
-        "spearman_pvalue": 0.3187058515589791,
-        "low_bin_mean": -0.007164797088892616,
-        "high_bin_mean": 0.042088135417464166,
-        "low_minus_high": -0.04925293250635678,
+        "n": 875,
+        "spearman_rho": 0.033978155633276164,
+        "spearman_pvalue": 0.3154072910525669,
+        "low_bin_mean": -0.0071647687701184085,
+        "high_bin_mean": 0.04208817457960234,
+        "low_minus_high": -0.049252943349720746,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
       },
       {
         "horizon": "13W",
-        "n": 866,
-        "spearman_rho": 0.07790593070688168,
-        "spearman_pvalue": 0.021860659180813105,
-        "low_bin_mean": -0.02329340530700155,
-        "high_bin_mean": 0.0455335401661795,
-        "low_minus_high": -0.06882694547318105,
+        "n": 870,
+        "spearman_rho": 0.0799893266860048,
+        "spearman_pvalue": 0.01828794104618796,
+        "low_bin_mean": -0.023293360035288743,
+        "high_bin_mean": 0.045533569997543044,
+        "low_minus_high": -0.06882693003283179,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
