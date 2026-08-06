@@ -32,8 +32,11 @@ jobs:
       - name: Run rigorous positioning proxy backtest
         run: |
           mkdir -p validation-output
+          set +e
           python validation/backtest_positioning_proxy.py > validation-output/positioning_proxy_run.log 2>&1
+          status=$?
           cat validation-output/positioning_proxy_run.log
+          exit $status
       - name: Commit reproducible outputs
         run: |
           git config user.name "github-actions[bot]"
