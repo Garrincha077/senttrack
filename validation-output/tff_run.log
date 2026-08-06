@@ -1,6 +1,6 @@
-Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex', 'nofollow"></head><body><noscript>this site requires javascript to verify your browser. please enable javascript and reload.</noscript><script nonce="wzhai_w36lctzmyu_0qfug">']
+Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex', 'nofollow"></head><body><noscript>this site requires javascript to verify your browser. please enable javascript and reload.</noscript><script nonce="bi0r7nkfup9xzo2dphjvqg">']
 {
-  "generated_at": "2026-08-06T14:20:34+00:00",
+  "generated_at": "2026-08-06T14:22:43+00:00",
   "formula_version": "cot-tff-research-informed-v1-frozen",
   "sources": {
     "cftc": "CFTC annual TFF ZIP archives",
@@ -26,11 +26,11 @@ Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charse
       {
         "horizon": "1W",
         "n": 882,
-        "spearman_rho": 0.03480732896277329,
-        "spearman_pvalue": 0.3018043130079358,
-        "low_bin_mean": 0.0009469458206278725,
-        "high_bin_mean": 0.014809546846191856,
-        "low_minus_high": -0.013862601025563984,
+        "spearman_rho": 0.034798794113202934,
+        "spearman_pvalue": 0.30192293961896466,
+        "low_bin_mean": 0.0009469334544790128,
+        "high_bin_mean": 0.014809560411159963,
+        "low_minus_high": -0.013862626956680951,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
@@ -38,11 +38,11 @@ Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charse
       {
         "horizon": "4W",
         "n": 879,
-        "spearman_rho": 0.0306217166337903,
-        "spearman_pvalue": 0.36451712511740175,
-        "low_bin_mean": 0.002951569782271196,
-        "high_bin_mean": 0.027612862946764086,
-        "low_minus_high": -0.02466129316449289,
+        "spearman_rho": 0.030602899009609885,
+        "spearman_pvalue": 0.36481207092462886,
+        "low_bin_mean": 0.002951540639383606,
+        "high_bin_mean": 0.02761280976918059,
+        "low_minus_high": -0.024661269129796985,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
@@ -50,11 +50,11 @@ Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charse
       {
         "horizon": "8W",
         "n": 875,
-        "spearman_rho": 0.03397573743769788,
-        "spearman_pvalue": 0.31544175334458424,
-        "low_bin_mean": -0.007164783345031922,
-        "high_bin_mean": 0.04208819912454053,
-        "low_minus_high": -0.04925298246957245,
+        "spearman_rho": 0.03397777946951954,
+        "spearman_pvalue": 0.315412651691379,
+        "low_bin_mean": -0.007164822221720066,
+        "high_bin_mean": 0.042088118610832746,
+        "low_minus_high": -0.04925294083255281,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
@@ -64,9 +64,9 @@ Stooq failed Unexpected Stooq columns: ['<!doctype html><html><head><meta charse
         "n": 870,
         "spearman_rho": 0.07998364105519294,
         "spearman_pvalue": 0.018296237225319013,
-        "low_bin_mean": -0.023293368407393863,
-        "high_bin_mean": 0.04553351523081019,
-        "low_minus_high": -0.06882688363820405,
+        "low_bin_mean": -0.023293376426214117,
+        "high_bin_mean": 0.045533500685360405,
+        "low_minus_high": -0.06882687711157452,
         "low_bin_n": 34,
         "high_bin_n": 21,
         "directional_check": false
