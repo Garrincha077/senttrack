@@ -28,9 +28,13 @@ jobs:
       - name: Run research-only Structural/Crowding backtest
         run: |
           mkdir -p validation-output
-          python validation/backtest_structural_crowding.py | tee validation-output/structural_crowding_run.log
+          set +e
+          python validation/backtest_structural_crowding.py > validation-output/structural_crowding_run.log 2>&1
+          status=$?
+          cat validation-output/structural_crowding_run.log
+          echo "BACKTEST_EXIT=$status" >> "$GITHUB_ENV"
+          exit 0
       - name: Commit reproducible research outputs to research branch
-        if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -38,7 +42,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No output changes to commit"
           else
-            git commit -m "research: add structural crowding backtest results"
+            git commit -m "research: update structural crowding backtest outputs"
             git push origin HEAD:structural-crowding-backtest-v1
           fi
       - name: Upload outputs
@@ -49,3 +53,10 @@ jobs:
           path: validation-output/structural_crowding_*
           if-no-files-found: warn
           retention-days: 30
+      - name: Fail if backtest failed
+        if: always()
+        run: |
+          if [ "${BACKTEST_EXIT:-1}" != "0" ]; then
+            echo "Backtest failed; see committed validation-output/structural_crowding_run.log"
+            exit "${BACKTEST_EXIT:-1}"
+          fi
