@@ -37,29 +37,45 @@ jobs:
           sys.path.insert(0, 'validation')
           import backtest_structural_crowding as bt
 
-          original_download = bt.download_aaii
-          pinned = Path('validation/data/aaii_backtest_2024_2026.csv')
+          original_aaii = bt.download_aaii
+          original_hy = bt.download_hy_oas
+          pinned_aaii = Path('validation/data/aaii_backtest_2024_2026.csv')
+          fred_mirror = 'https://raw.githubusercontent.com/zhengkai-p-unsw/fins5557-rv-forecasting/1552148e3bfc7e792544bb751799021054b073c6/data/raw/fred_BAMLH0A0HYM2.csv'
 
           def download_aaii_with_fallback():
               try:
-                  return original_download()
+                  return original_aaii()
               except Exception as exc:
                   print(f'AAII official XLS unavailable ({type(exc).__name__}: {exc}); using pinned research slice.')
-                  df = pd.read_csv(pinned)
+                  df = pd.read_csv(pinned_aaii)
                   df['release_date'] = pd.to_datetime(df['date'], errors='coerce')
                   df['bullish'] = pd.to_numeric(df['bullish'], errors='coerce') * 100.0
                   df['bearish'] = pd.to_numeric(df['bearish'], errors='coerce') * 100.0
                   df = df.dropna(subset=['release_date', 'bullish', 'bearish']).copy()
                   df['aaii_spread'] = df['bullish'] - df['bearish']
-                  # The pinned dates are release/effective dates. The core script shifts
-                  # survey_date to the next U.S. trading day, so backdate one day here.
                   df['survey_date'] = df['release_date'] - pd.Timedelta(days=1)
                   out = df[['survey_date', 'bullish', 'bearish', 'aaii_spread']].sort_values('survey_date')
                   if len(out) < 90:
                       raise RuntimeError(f'Pinned AAII slice unexpectedly short: {len(out)}')
                   return out
 
+          def download_hy_with_fallback():
+              try:
+                  return original_hy()
+              except Exception as exc:
+                  print(f'FRED direct CSV unavailable ({type(exc).__name__}: {exc}); using pinned GitHub mirror of FRED series.')
+                  df = pd.read_csv(fred_mirror)
+                  df = df.rename(columns={'BAMLH0A0HYM2': 'hy_oas'})
+                  df['observation_date'] = pd.to_datetime(df['observation_date'], errors='coerce')
+                  df['hy_oas'] = pd.to_numeric(df['hy_oas'], errors='coerce')
+                  df = df.dropna(subset=['observation_date', 'hy_oas']).sort_values('observation_date')
+                  df = df[(df['observation_date'] >= pd.Timestamp(bt.START)) & (df['observation_date'] <= pd.Timestamp(bt.END))]
+                  if len(df) < 300:
+                      raise RuntimeError(f'Pinned HY OAS mirror unexpectedly short: {len(df)}')
+                  return df[['observation_date', 'hy_oas']]
+
           bt.download_aaii = download_aaii_with_fallback
+          bt.download_hy_oas = download_hy_with_fallback
           bt.main()
           PY
           status=$?
